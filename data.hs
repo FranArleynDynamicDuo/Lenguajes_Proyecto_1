@@ -12,6 +12,9 @@ data Term =   Var           Char
             | UnEquiv       Term Term
             | EquivCenter   Term Term
 
+-- Definimos Equation
+-- data Equation = E Term Term
+
 -- NOTA: VERIFICAR LA PRECEDENCIA
 
 -- Definimos el Operador negacion
@@ -44,7 +47,7 @@ infixl 2 <==>
 (<==>) t1 t2 = Equiv t1 t2
 
 infixl 1 ===
-(===) :: Term -> Term -> Term -- Devuelve un objeto tipo Equation
+(===) :: Term -> Term -> Term -- Debe devolver Equation
 (===) t1 t2 = EquivCenter t1  t2
 
 -- Muestra los terminos de manera presentable (Importante para el Proyecto)
