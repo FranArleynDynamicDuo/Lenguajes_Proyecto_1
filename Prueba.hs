@@ -42,28 +42,37 @@ x3 = Var 3
 
 -- Muestra los terminos de manera presentable (Importante para el Proyecto)
 showTerm :: Term -> String
-showTerm (Var x) = "x" ++ (show x)
-
+-- Variable
+showTerm (Var x) = "x" ++ show x
+-- Conjuncion
 showTerm (Or (Var x) (Var y)) = showTerm(Var x) ++ "\\/" ++ showTerm(Var y)
 showTerm (Or (Var x) t) = showTerm(Var x)  ++ "\\/ (" ++ showTerm t ++ ")"
 showTerm (Or t (Var x)) = "(" ++ showTerm t ++ ")" ++ "\\/" ++ showTerm(Var x)
 showTerm (Or t1 t2) = "(" ++ showTerm t1 ++ ") \\/ (" ++ showTerm t2 ++ ")"
-
+-- Conjuncion
 showTerm (And (Var x) (Var y)) = showTerm(Var x) ++ "/\\" ++ showTerm(Var y)
 showTerm (And (Var x) t) = showTerm(Var x)  ++ "/\\ (" ++ showTerm t ++ ")"
 showTerm (And t (Var x)) = "(" ++ showTerm t ++ ")" ++ "/\\" ++ showTerm(Var x)
 showTerm (And t1 t2) = "(" ++ showTerm t1 ++ ") /\\ (" ++ showTerm t2 ++ ")"
-
+-- Conjuncion
 showTerm (Equiv (Var x) (Var y)) = showTerm(Var x) ++ "<==>" ++ showTerm(Var y)
 showTerm (Equiv (Var x) t) = showTerm(Var x)  ++ "<==> (" ++ showTerm t ++ ")"
 showTerm (Equiv t (Var x)) = "(" ++ showTerm t ++ ")" ++ "<==>" ++ showTerm(Var x)
 showTerm (Equiv t1 t2) = "(" ++ showTerm t1 ++ ") <==> (" ++ showTerm t2  ++ ")"
-
+-- Disjuncion
+showTerm (Neg (Var x)) = "¬" ++ showTerm(Var x)
+showTerm (Neg t) = "¬(" ++ showTerm t ++ ")"
+-- Equivalencia
+showTerm (Equiv (Var x) (Var y)) = showTerm(Var x) ++ "<==>" ++ showTerm(Var y)
+showTerm (Equiv (Var x) t) = showTerm(Var x)  ++ "<==> (" ++ showTerm t ++ ")"
+showTerm (Equiv t (Var x)) = "(" ++ showTerm t ++ ")" ++ "<==>" ++ showTerm(Var x)
+showTerm (Equiv t1 t2) = "(" ++ showTerm t1 ++ ") <==> (" ++ showTerm t2  ++ ")"
+-- Inequivalencia
 showTerm (UnEquiv (Var x) (Var y)) = showTerm(Var x) ++ "!<==>" ++ showTerm(Var y)
 showTerm (UnEquiv (Var x) t) = showTerm(Var x)  ++ "!<==> (" ++ showTerm t ++ ")"
 showTerm (UnEquiv t (Var x)) = "(" ++ showTerm t ++ ")" ++ "!<==>" ++ showTerm(Var x)
 showTerm (UnEquiv t1 t2) = "(" ++ showTerm t1 ++ ") !<==> (" ++ showTerm t2 ++ ")"
-
+-- Implicacion
 showTerm (Imply (Var x) (Var y)) = showTerm(Var x) ++ "==>" ++ showTerm(Var y)
 showTerm (Imply (Var x) t) = showTerm(Var x)  ++ "==> (" ++ showTerm t ++ ")"
 showTerm (Imply t (Var x)) = "(" ++ showTerm t ++ ")" ++ "==>" ++ showTerm(Var x)
@@ -81,6 +90,8 @@ abstraer :: Term -> Term -> Term -> Term
 abstraer (Var x) (Var y) = if x == y then i else k (Var x)
 abstraer (Var x) (Or (Var y) t2) = s ( s ( k Or ) i ) (k t2)
 
-abstraer2 :: Term -> Term -> Term -> Term
-abstraer2 (Var x) (Var y) = if x == y then i else k (Var x)
-abstraer2 (Var x) (Or t1 t2) =  s ( s ( k Or ) (abstraer2 (Var x) t1) ) (abstraer2 (Var x) t2)
+
+abstraer2 :: Term -> Term -> (Term -> Term)
+abstraer2 (Var x) (Var y) = if x == y then i else k (Var y)
+abstraer2 (Var x) (Or t1 t2) = s (s (k Or) (abstraer2 (Var x) t1)) (abstraer2 (Var x) t2)
+abstraer2 (Or t1 t2) _ = error "solo se puede abstraer una variable"
