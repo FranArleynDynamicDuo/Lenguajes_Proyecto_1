@@ -81,11 +81,14 @@ showTerm (Imply (Var x) (Var y)) = showTerm(Var x) ++ "==>" ++ showTerm(Var y)
 showTerm (Imply (Var x) t) = showTerm(Var x)  ++ "==> (" ++ showTerm t ++ ")"
 showTerm (Imply t (Var x)) = "(" ++ showTerm t ++ ")" ++ "==>" ++ showTerm(Var x)
 showTerm (Imply t1 t2) = "(" ++ showTerm t1 ++ ") ==> (" ++ showTerm t2 ++ ")"
+
 -- Definimos que los terminos se mostraran con la funcion showTerm
 instance Show Term where show = showTerm
+
 -- Definimos que las ecuaciones se mostraran con la funcion showEquiv
 showEquiv :: Equation -> String
 showEquiv (EquivCenter t1 t2) = "(" ++ showTerm t1 ++ ") === (" ++ showTerm t2 ++ ")"
+
 -- Definimos la forma de mostrar las ecuaciones
 instance Show Equation where show = showEquiv
 
@@ -226,15 +229,10 @@ leibniz :: Equation -> Term -> Term -> Equation
 leibniz (EquivCenter t1 t2) t3 (Var z) = (EquivCenter (sust t3 (t1,Var z))  (sust t3 (t2,Var z)))
 
 -- Inferencia
--- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
 infer :: Float -> Equation -> Sust -> Term -> Term -> Equation
-infer n (EquivCenter t1 t2) (p,Var q) (Var z) e = leibniz((EquivCenter  t2) )
+infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3 = leibniz (EquivCenter (sust t1 (p,Var q)) (sust t2 (p,Var q)) ) t3 (Var z) 
 
 -- Step
 -- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
--- step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term
--- step n (EquivCenter t1 t2) (p,Var q) (Var z) e = (EquivCenter t1 t2)
-
--- Statements
-
--- statement :: Term -> IO Term
+step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term 
+step termino1 n (EquivCenter t1 t2) (p,Var q) (Var z) t3 = 	if 	(termino1 == t1) then t2 else if (termino1 == t2) then t1 else (Var z)
