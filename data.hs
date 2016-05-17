@@ -208,25 +208,33 @@ instance Sustitution (Term,Term,Sust,Term,Term) where
 	sust (UnEquiv t1 t2) (p, r,(t,Var u),Var s,Var q)= UnEquiv (sust t1 (p,r,(t,Var u),Var s,Var q)) (sust t2 (p,r,(t,Var u),Var s,Var q))
 	sust (Imply t1 t2) (p, r,(t,Var u),Var s,Var q)= Imply (sust t1 (p,r,(t,Var u),Var s,Var q)) (sust t2 (p,r,(t,Var u),Var s,Var q))
 
--- Instanciacion
-instantiate :: Equation -> Sust -> Equation
-instantiate (EquivCenter t1 t2) (p,Var q) = (EquivCenter (sust t1 (p,Var q)) (sust t2 (p,Var q)))
+class Instantiation ins where
+    instantiate :: Equation -> ins -> Equation
+
+-- Instanciacion Con Un Termino
+instance Instantiation Sust where
+	instantiate (EquivCenter t1 t2) (p,Var q) = (EquivCenter (sust t1 (p,Var q)) (sust t2 (p,Var q)))
+-- Instanciacion Con 2 Termino
+instance Instantiation (Term,Sust,Term) where
+    instantiate (EquivCenter t1 t2) (p,(r,Var s),Var q) = (EquivCenter (sust t1 (p,(r,Var s),Var q)) (sust t2 (p,(r,Var s),Var q)))
+-- Instanciacion Con 3 Terminos
+instance Instantiation (Term,Term,Sust,Term,Term) where
+	instantiate (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) = (EquivCenter (sust t1 (p,r,(t,Var u),Var s,Var q)) (sust t2 (p,r,(t,Var u),Var s,Var q)))
 
 -- Regla De Leibniz
--- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
 leibniz :: Equation -> Term -> Term -> Equation
-leibniz (EquivCenter t1 t2) t3 (Var z) = (EquivCenter t1 t2)
+leibniz (EquivCenter t1 t2) t3 (Var z) = (EquivCenter (sust t3 (t1,Var z))  (sust t3 (t2,Var z)))
 
 -- Inferencia
 -- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
 infer :: Float -> Equation -> Sust -> Term -> Term -> Equation
-infer n (EquivCenter t1 t2) (p,Var q) (Var z) e = (EquivCenter t1 t2)
+infer n (EquivCenter t1 t2) (p,Var q) (Var z) e = leibniz((EquivCenter  t2) )
 
 -- Step
 -- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
-step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term
-step n (EquivCenter t1 t2) (p,Var q) (Var z) e = (EquivCenter t1 t2)
+-- step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term
+-- step n (EquivCenter t1 t2) (p,Var q) (Var z) e = (EquivCenter t1 t2)
 
 -- Statements
 
-statement :: Term -> IO Term
+-- statement :: Term -> IO Term
