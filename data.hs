@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-module Term where
+module Proyecto_1 where
 
 -- TIPOS
 -- Definimos Term
@@ -22,30 +22,30 @@ type Sust = (Term,Term)
 -- OPERADORES
 -- Definimos el Operador negacion
 neg :: Term -> Term
-neg t1 = Neg t1
+neg = Neg
 -- Definimos el Operador "\/""
 infixl 4 \/
 (\/) :: Term -> Term -> Term
-(\/) t1 t2 = Or t1 t2
+(\/) = Or
 -- Definimos el Operador "/\""
 infixl 4 /\
 (/\) :: Term -> Term -> Term
-(/\) t1 t2 = And t1 t2
+(/\) = And
 -- Definimos el Operador Inequivalencia
 infixr 3 ==>
 (==>) :: Term -> Term -> Term
-(==>) t1 t2 = Imply t1 t2
+(==>) = Imply
 -- Definimos el Operador equivalencia
 infixl 2 !<==>
 (!<==>) :: Term -> Term -> Term
-(!<==>) t1 t2 = UnEquiv t1  t2
+(!<==>) = UnEquiv
 -- Definimos el Operador equivalencia
 infixl 2 <==>
 (<==>) :: Term -> Term -> Term
-(<==>) t1 t2 = Equiv t1 t2
+(<==>) = Equiv
 infixl 1 ===
 (===) :: Term -> Term -> Equation -- Debe devolver Equation
-(===) t1 t2 = EquivCenter t1  t2
+(===) = EquivCenter
 
 -- Muestra los terminos de manera presentable (Importante para el Proyecto)
 -- Caso Constante
@@ -179,9 +179,9 @@ infixl 0 =:
 (=:) t1 t2 = (t1,t2)
 
 class Sustitution t where
-	sust:: Term -> t -> Term
+    sust:: Term -> t -> Term
 
-instance Sustitution Sust where 
+instance Sustitution Sust where
 	sust (Var x) (p,Var q) = if (Var q == Var x) then p else (Var x)
 	sust (Neg t1) (p, Var q)= Neg (sust t1 (p,Var q))
 	sust (Or t1 t2) (p, Var q)= Or (sust t1 (p,Var q)) (sust t2 (p,Var q))
@@ -189,8 +189,8 @@ instance Sustitution Sust where
 	sust (Equiv t1 t2) (p, Var q)= Equiv (sust t1 (p,Var q)) (sust t2 (p,Var q))
 	sust (UnEquiv t1 t2) (p, Var q)= UnEquiv (sust t1 (p,Var q)) (sust t2 (p,Var q))
 	sust (Imply t1 t2) (p, Var q)= Imply (sust t1 (p,Var q)) (sust t2 (p,Var q))
-		
-instance Sustitution (Term,Sust,Term) where 
+
+instance Sustitution (Term,Sust,Term) where
 	sust (Var x) (p,(r,Var s),Var q) = if (Var q == Var x) then p else if (Var s == Var x) then r else (Var x)
 	sust (Neg t1) (p,(r,Var s), Var q)= Neg (sust t1 (p,(r,Var s),Var q))
 	sust (Or t1 t2) (p,(r,Var s), Var q)= Or (sust t1 (p,(r,Var s),Var q)) (sust t2 (p,(r,Var s),Var q))
@@ -198,8 +198,8 @@ instance Sustitution (Term,Sust,Term) where
 	sust (Equiv t1 t2) (p,(r,Var s), Var q)= Equiv (sust t1 (p,(r,Var s),Var q)) (sust t2 (p,(r,Var s),Var q))
 	sust (UnEquiv t1 t2) (p, (r,Var s),Var q)= UnEquiv (sust t1 (p,(r,Var s),Var q)) (sust t2 (p,(r,Var s),Var q))
 	sust (Imply t1 t2) (p, (r,Var s),Var q)= Imply (sust t1 (p,(r,Var s),Var q)) (sust t2 (p,(r,Var s),Var q))
-	
-instance Sustitution (Term,Term,Sust,Term,Term) where 
+
+instance Sustitution (Term,Term,Sust,Term,Term) where
 	sust (Var x) (p,r,(t,Var u),Var s,Var q) = if (Var q == Var x) then p else if (Var s == Var x) then r else if (Var u == Var x) then t else (Var x)
 	sust (Neg t1) (p,r,(t,Var u),Var s, Var q)= Neg (sust t1 (p,r,(t,Var u),Var s,Var q))
 	sust (Or t1 t2) (p,r,(t,Var u),Var s, Var q)= Or (sust t1 (p,r,(t,Var u),Var s,Var q)) (sust t2 (p,r,(t,Var u),Var s,Var q))
@@ -207,3 +207,26 @@ instance Sustitution (Term,Term,Sust,Term,Term) where
 	sust (Equiv t1 t2) (p,r,(t,Var u),Var s, Var q)= Equiv (sust t1 (p,r,(t,Var u),Var s,Var q)) (sust t2 (p,r,(t,Var u),Var s,Var q))
 	sust (UnEquiv t1 t2) (p, r,(t,Var u),Var s,Var q)= UnEquiv (sust t1 (p,r,(t,Var u),Var s,Var q)) (sust t2 (p,r,(t,Var u),Var s,Var q))
 	sust (Imply t1 t2) (p, r,(t,Var u),Var s,Var q)= Imply (sust t1 (p,r,(t,Var u),Var s,Var q)) (sust t2 (p,r,(t,Var u),Var s,Var q))
+
+-- Instanciacion
+instantiate :: Equation -> Sust -> Equation
+instantiate (EquivCenter t1 t2) (p,Var q) = (EquivCenter (sust t1 (p,Var q)) (sust t2 (p,Var q)))
+
+-- Regla De Leibniz
+-- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
+leibniz :: Equation -> Term -> Term -> Equation
+leibniz (EquivCenter t1 t2) t3 (Var z) = (EquivCenter t1 t2)
+
+-- Inferencia
+-- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
+infer :: Float -> Equation -> Sust -> Term -> Term -> Equation
+infer n (EquivCenter t1 t2) (p,Var q) (Var z) e = (EquivCenter t1 t2)
+
+-- Step
+-- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
+step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term
+step n (EquivCenter t1 t2) (p,Var q) (Var z) e = (EquivCenter t1 t2)
+
+-- Statements
+
+statement :: Term -> IO Term
