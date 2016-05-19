@@ -137,8 +137,7 @@ lambda = ()
 proof :: Equation -> IO Term
 proof (EquivCenter t1 t2) = return t1
 
--- verify :: ()
---done :: Equation -> Term -> String
---done equacion termino2
+done :: Equation -> (Term -> IO String)
+done equacion = \termino2 -> if (rightTerm equacion == termino2) then return "proof successful" else return "proof successful"
 --    | (rightTerm equacion == termino2) = "proof successful"
 --    | (rightTerm equacion == termino2) = "proof fail"
