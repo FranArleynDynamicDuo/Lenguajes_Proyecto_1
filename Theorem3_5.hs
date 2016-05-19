@@ -1,8 +1,9 @@
-module Theroem3_5 where
-import Function
+module Theorem3_5
+    (
+    ) where
 import Term
+import Function
 import Theorems
-
 
 verify = let theorem = (p <==> q) <==> q === p in
          proof theorem

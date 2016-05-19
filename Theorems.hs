@@ -1,4 +1,4 @@
-module Theorems (prop) where
+module Theorems where
 
 import Term (Term, (===), (<==>), (!<==>), (\/), neg, true, false, p, q, r, Equation)
 
