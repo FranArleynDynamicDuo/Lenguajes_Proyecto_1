@@ -2,7 +2,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Function where
 import Term
-import Theorem
+import Theorems (prop)
 
 -- SUSTITUCION
 infixl 0 =:
