@@ -117,8 +117,10 @@ instance Step (Term,Term,Sust,Term,Term) where
 
 -- Statement
 statement :: Float -> () -> Sust -> () -> () -> Term -> Term -> (Term -> IO Term)
-statement num _ sustitution _ _ (Var z) e = \termino1 -> return (step termino1 num (prop num) sustitution (Var z) e)
+statement num _ sustitution _ _ (Var z) e = \termino1 -> printStatement num sustitution (Var z) e >> return (step termino1 num (prop num) sustitution (Var z) e)
 
+printStatement :: Float -> Sust -> Term -> Term -> IO ()
+printStatement num (p,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm q) ++ " =: " ++ (showTerm q) ++ "," ++ (showTerm r) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n\n")
 
 -- Statement
 -- statement :: Term -> IO Term
@@ -137,7 +139,5 @@ lambda = ()
 proof :: Equation -> IO Term
 proof (EquivCenter t1 t2) = return t1
 
-done :: Equation -> (Term -> IO String)
+done :: Equation -> Term -> IO String
 done equacion = \termino2 -> if (rightTerm equacion == termino2) then return "proof successful" else return "proof successful"
---    | (rightTerm equacion == termino2) = "proof successful"
---    | (rightTerm equacion == termino2) = "proof fail"
