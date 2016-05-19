@@ -99,25 +99,30 @@ instance Step Sust where
     step termino1 n (EquivCenter t1 t2) (p,Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3)
-        | otherwise = error "Error"
+        | otherwise = error "*** Exception: invalid inference rule"
 
 -- Step Con 2 Terminos
 instance Step (Term,Sust,Term) where
     step termino1 n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3)
-        | otherwise = error "Error"
+        | otherwise = error "*** Exception: invalid inference rule"
 
 -- Step Con 3 Terminos
 instance Step (Term,Term,Sust,Term,Term) where
     step termino1 n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3)
-        | otherwise = error "Error"
+        | otherwise = error "*** Exception: invalid inference rule"
 
 -- Statement
-statement :: Float -> () -> Sust -> () -> () -> Term -> Term -> I0 Term
-statement num _ sustitution _ _ (Var z) e = step t1 num (prop num) sustitution (Var z) e
+statement :: Float -> () -> Sust -> () -> () -> Term -> Term -> (Term -> IO Term)
+statement num _ sustitution _ _ (Var z) e = \termino1 -> return (step termino1 num (prop num) sustitution (Var z) e)
+
+
+-- Statement
+-- statement :: Term -> IO Term
+-- statement termino1 = step termino1 num (prop num) sustitution (Var z) e
 
 
 with :: ()
@@ -128,9 +133,9 @@ lambda :: ()
 lambda = ()
 
 
--- proof 
---proof :: Equation -> I0 Term
---(EquivCenter t1 t2) >>= statement = statement t1
+-- proof
+proof :: Equation -> IO Term
+proof (EquivCenter t1 t2) = return t1
 
 -- verify :: ()
 --done :: Equation -> Term -> String
