@@ -25,7 +25,7 @@ instance Sustitution Sust where
 
 
 instance Sustitution (Term,Sust,Term) where
-	sust (Var x) (p,(r,Var s),Var q) = if (Var q == Var x) then p else if (Var s == Var x) then r else (Var x)
+	sust (Var x) (p,(r,Var s),Var q) = if (Var q == Var x) then r else if (Var s == Var x) then p else (Var x)
         sust MTrue (p,(r,Var s), Var q) = MTrue
         sust MFalse (p,(r,Var s), Var q) = MFalse
         sust (Neg t1) (p,(r,Var s), Var q)= Neg (sust t1 (p,(r,Var s),Var q))
@@ -36,7 +36,7 @@ instance Sustitution (Term,Sust,Term) where
     	sust (Imply t1 t2) (p, (r,Var s),Var q)= Imply (sust t1 (p,(r,Var s),Var q)) (sust t2 (p,(r,Var s),Var q))
 
 instance Sustitution (Term,Term,Sust,Term,Term) where
-	sust (Var x) (p,r,(t,Var u),Var s,Var q) = if (Var q == Var x) then p else if (Var s == Var x) then r else if (Var u == Var x) then t else (Var x)
+	sust (Var x) (p,r,(t,Var u),Var s,Var q) = if (Var q == Var x) then t else if (Var s == Var x) then r else if (Var u == Var x) then p else (Var x)
         sust MTrue (p,r,(t,Var u),Var s, Var q) = MTrue
         sust MFalse (p,r,(t,Var u),Var s, Var q) = MFalse
 	sust (Neg t1) (p,r,(t,Var u),Var s, Var q)= Neg (sust t1 (p,r,(t,Var u),Var s,Var q))
@@ -98,21 +98,21 @@ instance Step Sust where
     step termino1 n (EquivCenter t1 t2) (p,Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3)
-        | otherwise = error "invalid inference rule"
+        | otherwise = error "invalid inference rule 1"
 
 -- Step Con 2 Terminos
 instance Step (Term,Sust,Term) where
     step termino1 n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3)
-        | otherwise = error "invalid inference rule"
+        | otherwise = error "invalid inference rule 2"
 
 -- Step Con 3 Terminos
 instance Step (Term,Term,Sust,Term,Term) where
     step termino1 n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3)
-        | otherwise = error "invalid inference rule"
+        | otherwise = error "invalid inference rule 3"
 
 -- Statement
 class Statement state where

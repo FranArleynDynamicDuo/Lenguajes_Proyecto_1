@@ -16,7 +16,7 @@ verify = let theorem = ( neg p === q <==> (p <==> neg q) ) in
          >>=
          statement 3.2 with (p =: p) using lambda z (q <==> neg z)
          >>=
-         statement 3.9 with (q, p =: p, q) using lambda z (q <==> z)
+         statement 3.9 with (q, p =: p, q) using lambda z (q <==> z) -- Correccion (p, q =: p, q)
          >>=
          statement 3.2 with (neg q =: q) using lambda z (q <==> z)
          >>=
