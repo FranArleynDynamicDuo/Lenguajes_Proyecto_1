@@ -95,6 +95,8 @@ instance Show Equation where show = showEquiv
 a :: Term
 a = Var 'a'
 
+b :: Term
+b = Var 'b'
 
 c :: Term
 c = Var 'c'

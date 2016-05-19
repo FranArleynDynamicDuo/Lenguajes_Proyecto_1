@@ -116,17 +116,36 @@ instance Step (Term,Term,Sust,Term,Term) where
         | otherwise = error "*** Exception: invalid inference rule"
 
 -- Statement
-statement :: Float -> () -> Sust -> () -> () -> Term -> Term -> (Term -> IO Term)
-statement num _ sustitution _ _ (Var z) e = \termino1 -> printStatement num sustitution (Var z) e >> return (step termino1 num (prop num) sustitution (Var z) e) >>= printAndReturnTerm
+class Statement state where
+    statement :: Float -> () -> state -> () -> () -> Term -> Term -> (Term -> IO Term)
+-- Caso de una sustitucion
+instance Statement Sust where
+    statement num _ (p,Var q) _ _ (Var z) e = \termino1 -> printStatement num (p,Var q) (Var z) e >> return (step termino1 num (prop num) (p,Var q) (Var z) e) >>= printAndReturnTerm
+-- Caso de 2 sustituciones
+instance Statement (Term,Sust,Term) where
+    statement num _ (p,(r,Var s),Var q) _ _ (Var z) e = \termino1 -> printStatement num (p,(r,Var s),Var q) (Var z) e >> return (step termino1 num (prop num) (p,(r,Var s),Var q) (Var z) e) >>= printAndReturnTerm
+-- Caso de 3 sustituciones
+instance Statement (Term,Term,Sust,Term,Term) where
+    statement num _ (p,r,(t,Var u),Var s,Var q) _ _ (Var z) e = \termino1 -> printStatement num (p,r,(t,Var u),Var s,Var q) (Var z) e >> return (step termino1 num (prop num) (p,r,(t,Var u),Var s,Var q) (Var z) e) >>= printAndReturnTerm
+
+class Print s where
+    printStatement :: Float -> s -> Term -> Term -> IO ()
+
+instance Print Sust where
+	printStatement num (p,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++  " =: " ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
+
+instance Print (Term,Sust,Term)  where
+	printStatement num (p,(r,s),q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm r) ++ " =: " ++ (showTerm s) ++ "," ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
+
+instance Print (Term,Term,Sust,Term,Term) where
+	printStatement num (p,r,(t,u),s,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm r) ++ "," ++ (showTerm t) ++ " =: " ++ (showTerm u) ++ "," ++ (showTerm s) ++ "," ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
+
 -- Impresion A Consola De Un Termino
 printTerm :: Term -> IO ()
 printTerm t = putStr (showTerm t ++ "\n")
 -- Impresion A Consola De Un Termino para luego retornarlo como resultado
 printAndReturnTerm :: Term -> IO Term
 printAndReturnTerm t = putStr (showTerm t ++ "\n") >> return t
--- Impresion A Consola De Un statement
-printStatement :: Float -> Sust -> Term -> Term -> IO ()
-printStatement num (p,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm q) ++ " =: " ++ (showTerm q) ++ "," ++ (showTerm r) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
 -- Impresion A Consola Del mensaje de inicio con la ecuacion
 printEquationStart :: Equation -> IO ()
 printEquationStart equation = putStr ("\nprooving < " ++ (showEquiv equation) ++ "> \n\n")
