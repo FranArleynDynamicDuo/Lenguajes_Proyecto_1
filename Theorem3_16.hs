@@ -1,6 +1,6 @@
 module Theroem3_16 where
-import Function
 import Term
+import Function
 import Theorems
 
 verify = let theorem = ( p !<==> q === q !<==> p ) in

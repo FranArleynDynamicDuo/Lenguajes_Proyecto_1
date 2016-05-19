@@ -99,21 +99,21 @@ instance Step Sust where
     step termino1 n (EquivCenter t1 t2) (p,Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,Var q) (Var z) t3)
-        | otherwise = error "*** Exception: invalid inference rule"
+        | otherwise = error "invalid inference rule"
 
 -- Step Con 2 Terminos
 instance Step (Term,Sust,Term) where
     step termino1 n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,(r,Var s),Var q) (Var z) t3)
-        | otherwise = error "*** Exception: invalid inference rule"
+        | otherwise = error "invalid inference rule"
 
 -- Step Con 3 Terminos
 instance Step (Term,Term,Sust,Term,Term) where
     step termino1 n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3
         | leftTerm  (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3) == termino1 = rightTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3)
         | rightTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3)
-        | otherwise = error "*** Exception: invalid inference rule"
+        | otherwise = error "invalid inference rule"
 
 -- Statement
 class Statement state where
@@ -132,13 +132,13 @@ class Print s where
     printStatement :: Float -> s -> Term -> Term -> IO ()
 
 instance Print Sust where
-	printStatement num (p,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++  " =: " ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
+	printStatement num (p,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++  " =: " ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (e)) ++ ">\n")
 
 instance Print (Term,Sust,Term)  where
-	printStatement num (p,(r,s),q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm r) ++ " =: " ++ (showTerm s) ++ "," ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
+	printStatement num (p,(r,s),q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm r) ++ " =: " ++ (showTerm s) ++ "," ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (e)) ++ ">\n")
 
 instance Print (Term,Term,Sust,Term,Term) where
-	printStatement num (p,r,(t,u),s,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm r) ++ "," ++ (showTerm t) ++ " =: " ++ (showTerm u) ++ "," ++ (showTerm s) ++ "," ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
+	printStatement num (p,r,(t,u),s,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm r) ++ "," ++ (showTerm t) ++ " =: " ++ (showTerm u) ++ "," ++ (showTerm s) ++ "," ++ (showTerm q) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (e)) ++ ">\n")
 
 -- Impresion A Consola De Un Termino
 printTerm :: Term -> IO ()

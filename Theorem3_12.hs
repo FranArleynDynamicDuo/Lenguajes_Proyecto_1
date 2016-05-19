@@ -1,6 +1,6 @@
 module Theroem3_12 where
-import Function
 import Term
+import Function
 import Theorems
 
 verify = let theorem = ( neg (neg p) === p ) in

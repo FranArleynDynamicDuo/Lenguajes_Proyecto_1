@@ -1,6 +1,6 @@
 module Theroem3_31 where
-import Function
 import Term
+import Function
 import Theorems
 
 verify = let theorem = ( p \/ (q \/ r) === (p \/ q) \/ (p \/ r) ) in
