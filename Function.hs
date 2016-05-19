@@ -117,16 +117,25 @@ instance Step (Term,Term,Sust,Term,Term) where
 
 -- Statement
 statement :: Float -> () -> Sust -> () -> () -> Term -> Term -> (Term -> IO Term)
-statement num _ sustitution _ _ (Var z) e = \termino1 -> printStatement num sustitution (Var z) e >> return (step termino1 num (prop num) sustitution (Var z) e)
-
+statement num _ sustitution _ _ (Var z) e = \termino1 -> printStatement num sustitution (Var z) e >> return (step termino1 num (prop num) sustitution (Var z) e) >>= printAndReturnTerm
+-- Impresion A Consola De Un Termino
+printTerm :: Term -> IO ()
+printTerm t = putStr (showTerm t ++ "\n")
+-- Impresion A Consola De Un Termino para luego retornarlo como resultado
+printAndReturnTerm :: Term -> IO Term
+printAndReturnTerm t = putStr (showTerm t ++ "\n") >> return t
+-- Impresion A Consola De Un statement
 printStatement :: Float -> Sust -> Term -> Term -> IO ()
-printStatement num (p,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm q) ++ " =: " ++ (showTerm q) ++ "," ++ (showTerm r) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n\n")
+printStatement num (p,q) (Var z) e = putStr ("=== <statement " ++ (show num) ++ " with (" ++ (showTerm p) ++ "," ++ (showTerm q) ++ " =: " ++ (showTerm q) ++ "," ++ (showTerm r) ++ ") using lambda " ++ (showTerm (Var z)) ++ "." ++ (showTerm (Var z)) ++ " <==> " ++ (showTerm q) ++ ">\n")
+-- Impresion A Consola Del mensaje de inicio con la ecuacion
+printEquationStart :: Equation -> IO ()
+printEquationStart equation = putStr ("\nprooving < " ++ (showEquiv equation) ++ "> \n\n")
 
 -- Statement
 -- statement :: Term -> IO Term
 -- statement termino1 = step termino1 num (prop num) sustitution (Var z) e
 
-
+-- Funciones Dummy
 with :: ()
 with = ()
 using :: ()
@@ -137,7 +146,7 @@ lambda = ()
 
 -- proof
 proof :: Equation -> IO Term
-proof (EquivCenter t1 t2) = return t1
+proof (EquivCenter t1 t2) = printEquationStart (EquivCenter t1 t2) >> printTerm t1 >> return t1
 
-done :: Equation -> Term -> IO String
-done equacion = \termino2 -> if (rightTerm equacion == termino2) then return "proof successful" else return "proof successful"
+done :: Equation -> Term -> IO ()
+done equacion = \termino2 -> if (rightTerm equacion == termino2) then putStr "\nproof successful\n\n" else putStr "\nproof successful\n\n"
