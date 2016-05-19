@@ -2,7 +2,8 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Term where
 
--- TIPOS
+-- TIPOS-----------------------------------------
+
 -- Definimos Term
 data Term =   Var           Char
             | MTrue
@@ -14,83 +15,101 @@ data Term =   Var           Char
             | Equiv         Term Term
             | UnEquiv       Term Term
             deriving Eq
+
 -- Definimos Equation
 data Equation = EquivCenter Term Term
+
 -- Definimos Sust
 type Sust = (Term,Term)
 
--- OPERADORES
+-- OPERADORES -----------------------------------
+
 -- Definimos el Operador negacion
 neg :: Term -> Term
 neg = Neg
+
 -- Definimos el Operador "\/""
 infixl 4 \/
 (\/) :: Term -> Term -> Term
 (\/) = Or
+
 -- Definimos el Operador "/\""
 infixl 4 /\
 (/\) :: Term -> Term -> Term
 (/\) = And
--- Definimos el Operador Inequivalencia
+
+-- Definimos el Operador Implicacion
 infixr 3 ==>
 (==>) :: Term -> Term -> Term
 (==>) = Imply
--- Definimos el Operador equivalencia
+
+-- Definimos el Operador Inequivalencia
 infixl 2 !<==>
 (!<==>) :: Term -> Term -> Term
 (!<==>) = UnEquiv
--- Definimos el Operador equivalencia
+
+-- Definimos el Operador Equivalencia
 infixl 2 <==>
 (<==>) :: Term -> Term -> Term
 (<==>) = Equiv
+
+-- Definimos el Operador Equivalencia Principal
 infixl 1 ===
-(===) :: Term -> Term -> Equation -- Debe devolver Equation
+(===) :: Term -> Term -> Equation
 (===) = EquivCenter
 
--- Muestra los terminos de manera presentable (Importante para el Proyecto)
+-- FUNCION showTerm: Imprime las Equaciones de manera correcta y legible -----------
+
 -- Caso Constante
 showTerm :: Term -> String
 showTerm (Var x) = init $ tail $ show x
 showTerm MTrue = "true"
 showTerm MFalse = "false"
+
 -- Caso Negacion
 showTerm (Neg (Var x)) = "¬(" ++ showTerm(Var x) ++ ")"
 showTerm (Neg t) = "¬(" ++ showTerm t ++ ")"
+
 -- Caso Disjuncion
 showTerm (Or (Var x) (Var y)) = showTerm(Var x) ++ "\\/" ++ showTerm(Var y)
 showTerm (Or (Var x) t) = showTerm(Var x)  ++ "\\/ (" ++ showTerm t ++ ")"
 showTerm (Or t (Var x)) = "(" ++ showTerm t ++ ")" ++ "\\/" ++ showTerm(Var x)
 showTerm (Or t1 t2) = "(" ++ showTerm t1 ++ ") \\/ (" ++ showTerm t2 ++ ")"
+
 -- Caso Conjuncion
 showTerm (And (Var x) (Var y)) = showTerm(Var x) ++ "/\\" ++ showTerm(Var y)
 showTerm (And (Var x) t) = showTerm(Var x)  ++ "/\\ (" ++ showTerm t ++ ")"
 showTerm (And t (Var x)) = "(" ++ showTerm t ++ ")" ++ "/\\" ++ showTerm(Var x)
 showTerm (And t1 t2) = "(" ++ showTerm t1 ++ ") /\\ (" ++ showTerm t2 ++ ")"
+
 -- Caso Equivalencia
 showTerm (Equiv (Var x) (Var y)) = showTerm(Var x) ++ "<==>" ++ showTerm(Var y)
 showTerm (Equiv (Var x) t) = showTerm(Var x)  ++ "<==> (" ++ showTerm t ++ ")"
 showTerm (Equiv t (Var x)) = "(" ++ showTerm t ++ ")" ++ "<==>" ++ showTerm(Var x)
 showTerm (Equiv t1 t2) = "(" ++ showTerm t1 ++ ") <==> (" ++ showTerm t2  ++ ")"
+
 -- Caso Inequivalencia
 showTerm (UnEquiv (Var x) (Var y)) = showTerm(Var x) ++ "!<==>" ++ showTerm(Var y)
 showTerm (UnEquiv (Var x) t) = showTerm(Var x)  ++ "!<==> (" ++ showTerm t ++ ")"
 showTerm (UnEquiv t (Var x)) = "(" ++ showTerm t ++ ")" ++ "!<==>" ++ showTerm(Var x)
 showTerm (UnEquiv t1 t2) = "(" ++ showTerm t1 ++ ") !<==> (" ++ showTerm t2 ++ ")"
+
 -- Caso Implicacion
 showTerm (Imply (Var x) (Var y)) = showTerm(Var x) ++ "==>" ++ showTerm(Var y)
 showTerm (Imply (Var x) t) = showTerm(Var x)  ++ "==> (" ++ showTerm t ++ ")"
 showTerm (Imply t (Var x)) = "(" ++ showTerm t ++ ")" ++ "==>" ++ showTerm(Var x)
 showTerm (Imply t1 t2) = "(" ++ showTerm t1 ++ ") ==> (" ++ showTerm t2 ++ ")"
 
--- Definimos que los terminos se mostraran con la funcion showTerm
 instance Show Term where show = showTerm
 
--- Definimos que las ecuaciones se mostraran con la funcion showEquiv
-showEquiv :: Equation -> String
+
+-- FUNCION showEquiv: Las ecuaciones se mostraran con la funcion showEquiv ----------
+showEquiv:: Equation -> String
 showEquiv (EquivCenter t1 t2) = "(" ++ showTerm t1 ++ ") === (" ++ showTerm t2 ++ ")"
 
--- Definimos la forma de mostrar las ecuaciones
 instance Show Equation where show = showEquiv
+
+-- DEFINEN TODOS LOS TERMINOS ------------------------------------------------------
 
 a :: Term
 a = Var 'a'
