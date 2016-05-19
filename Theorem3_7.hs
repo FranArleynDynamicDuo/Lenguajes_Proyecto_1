@@ -1,6 +1,4 @@
-module Theorem3_5
-    (
-    ) where
+module Theroem3_7 where
 import Term
 import Function
 import Theorems
