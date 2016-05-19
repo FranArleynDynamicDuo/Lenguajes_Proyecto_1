@@ -1,4 +1,4 @@
-module Theroem3_5 where
+module Theroem3_6 where
 import Function
 import Term
 import Theorems
