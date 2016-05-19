@@ -2,6 +2,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Function where
 import Term
+import Theorem
 
 -- SUSTITUCION
 infixl 0 =:
@@ -90,10 +91,6 @@ rightTerm :: Equation -> Term
 rightTerm (EquivCenter t1 t2) = t2
 
 -- Step
--- INCOMPLETA: TIENE UN RESULTADO SOLO PARA RELLENAR
--- step :: Term -> Float -> Equation -> Sust -> Term -> Term -> Term
--- step termino1 n (EquivCenter t1 t2) (p,Var q) (Var z) t3 = 	if 	(termino1 == t1) then t2 else if (termino1 == -- t2) then t1 else (Var z)
-
 class Step s where
     step :: Term -> Float -> Equation -> s -> Term -> Term -> Term
 
@@ -118,10 +115,9 @@ instance Step (Term,Term,Sust,Term,Term) where
         | rightTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3) == termino1 = leftTerm (infer n (EquivCenter t1 t2) (p,r,(t,Var u),Var s,Var q) (Var z) t3)
         | otherwise = error "Error"
 
-
 -- Statement
--- statement :: Float -> _ -> Sust -> _ -> _ -> Term-> Term
--- statement num with sustitution using lambda (Var z) e =
+statement :: Float -> () -> Sust -> () -> () -> Term -> Term -> I0 Term
+statement num _ sustitution _ _ (Var z) e = step t1 num (prop num) sustitution (Var z) e
 
 
 with :: ()
@@ -131,6 +127,13 @@ using = ()
 lambda :: ()
 lambda = ()
 
--- proof :: ()
+
+-- proof 
+--proof :: Equation -> I0 Term
+--(EquivCenter t1 t2) >>= statement = statement t1
 
 -- verify :: ()
+--done :: Equation -> Term -> String
+--done equacion termino2
+--    | (rightTerm equacion == termino2) = "proof successful"
+--    | (rightTerm equacion == termino2) = "proof fail"
