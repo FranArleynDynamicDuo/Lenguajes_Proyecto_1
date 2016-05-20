@@ -1,5 +1,4 @@
 module Theorems where
-import Term
 
 prop :: Float -> Equation
 prop num
